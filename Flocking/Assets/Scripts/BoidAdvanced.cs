@@ -3,9 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Boid : Kinematic
+public class BoidAdvanced : Kinematic
 {
-	BlendedSteering myMoveType;
+	PrioritizationSteering myMoveType;
 
 	public float flockDistance = 20f;
 	public float visionAngle = 45f;
@@ -27,6 +27,9 @@ public class Boid : Kinematic
 	public float weightSeek = 0.2f;
 	public GameObject seekTarget;
 
+	ObstacleAvoidance2 obstacleAvoidance;
+	private float weightObstacleAvoidance = 1f;
+
 
 	// Start is called before the first frame update
 	void Start()
@@ -46,7 +49,10 @@ public class Boid : Kinematic
 
 		seek = new Seek();
 		seek.character = this;
-        seek.flee = false;
+		seek.flee = false;
+
+		obstacleAvoidance = new ObstacleAvoidance2();
+		obstacleAvoidance.character = this;
 
 
 		separate.targets = null;
@@ -54,32 +60,53 @@ public class Boid : Kinematic
 		arrive.target = Vector3.zero;
 		
 		seek.target = seekTarget;
-		
 
-		BlendedSteering.BehaviorAndWeight[] behaviors = {
+
+		BlendedSteering.BehaviorAndWeight[] behaviorsAvoidance = {
+			new BlendedSteering.BehaviorAndWeight{
+				behavior = obstacleAvoidance,
+				weight = weightObstacleAvoidance
+			},
+		};
+
+		BlendedSteering.BehaviorAndWeight[] behaviorsFlock = {
 			new BlendedSteering.BehaviorAndWeight{
 				behavior = separate,
 				weight = weightSeparate
 			},
 			new BlendedSteering.BehaviorAndWeight{
-			    behavior = align,
+				behavior = align,
 				weight = weightAlign
 			},
 			new BlendedSteering.BehaviorAndWeight{
-			    behavior = arrive,
+				behavior = arrive,
 				weight = weightArrive
 			},
 			new BlendedSteering.BehaviorAndWeight{
-			    behavior = lookWhereGoing,
+				behavior = lookWhereGoing,
 				weight = weightLookWhereGoing
 			},
 			new BlendedSteering.BehaviorAndWeight{
-			    behavior = seek,
+				behavior = seek,
 				weight = weightSeek
 			},
 		};
 
-		myMoveType = new BlendedSteering
+
+		PrioritizationSteering.BehaviorAndWeight[] behaviors = {
+			new PrioritizationSteering.BehaviorAndWeight{
+				behavior = new BlendedSteering {
+					behaviors = behaviorsAvoidance
+				}
+			},
+			new PrioritizationSteering.BehaviorAndWeight{
+				behavior = new BlendedSteering {
+					behaviors = behaviorsFlock
+				}
+			},
+		};
+
+		myMoveType = new PrioritizationSteering
 		{
 			behaviors = behaviors,
 		};
@@ -94,21 +121,21 @@ public class Boid : Kinematic
 		Vector3 heading = Vector3.zero;
 
 		GameObject[] objs = GameObject.FindGameObjectsWithTag("Boid");
-        foreach (var obj in objs)
-        {
+		foreach (var obj in objs)
+		{
 			Vector3 directionToTarget = obj.transform.position - transform.position;
 			if (directionToTarget.magnitude < avoidDistance)
 			{
 				avoid.Add(obj.GetComponent<Kinematic>());
 			}
 			if (directionToTarget.magnitude < flockDistance && Mathf.Abs(Vector3.Angle(transform.forward, directionToTarget)) < visionAngle)
-            {
+			{
 				avoid.Add(obj.GetComponent<Kinematic>());
-                flock.Add(obj.GetComponent<Kinematic>());
+				flock.Add(obj.GetComponent<Kinematic>());
 				center += obj.transform.position;
 				heading += obj.transform.eulerAngles;
-            }
-        }
+			}
+		}
 
 		if (flock.Count > 0) {
 			center /= flock.Count;

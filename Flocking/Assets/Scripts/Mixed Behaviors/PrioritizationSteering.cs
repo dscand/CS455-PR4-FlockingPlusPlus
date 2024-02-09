@@ -1,22 +1,18 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BlendedSteering : SteeringBehavior
+public class PrioritizationSteering : BlendedSteering
 {
-    [Serializable]
-    public struct BehaviorAndWeight
+    public new struct BehaviorAndWeight
     {
-        public SteeringBehavior behavior;
-        public float weight;
+        public BlendedSteering behavior;
+        //public float weight;
     }
 
-    public BehaviorAndWeight[] behaviors;
+    public new BehaviorAndWeight[] behaviors;
 
-    // The overall maximum acceleration and rotation.
-    public float maxAcceleration = 100f;
-    public float maxRotation = 45f; // maxAngularVelocity
+    public float gamma = 0.1f;
 
     public override SteeringOutput getSteering()
     {
@@ -25,13 +21,13 @@ public class BlendedSteering : SteeringBehavior
             angular = 0f,
         };
 
-        // Accumulate all acceleration
         foreach (BehaviorAndWeight b in behaviors)
         {
             SteeringOutput output = b.behavior.getSteering();
-            result.linear += b.weight * output.linear;
-            if (!float.IsNaN(output.angular)) result.angular += b.weight * output.angular;
-            //Debug.Log("result - " + result.linear + " : " + result.angular);
+            if (output.linear.magnitude > gamma || Mathf.Abs(output.angular) > gamma) {
+                result = output;
+                break;
+            }
         }
 
         if (result.linear.magnitude > maxAcceleration) {

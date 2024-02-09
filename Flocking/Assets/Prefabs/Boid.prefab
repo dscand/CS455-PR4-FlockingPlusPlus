@@ -109,7 +109,7 @@ GameObject:
   - component: {fileID: 1592777040224657671}
   - component: {fileID: 1890533447553322627}
   - component: {fileID: 3621736874510783529}
-  - component: {fileID: 6725479345494795243}
+  - component: {fileID: 3870809748451716994}
   m_Layer: 0
   m_Name: Boid
   m_TagString: Boid
@@ -196,7 +196,7 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &6725479345494795243
+--- !u!114 &3870809748451716994
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -205,17 +205,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 3421136625976552471}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 42c2f0815b1206c4c9cefba197ceda73, type: 3}
+  m_Script: {fileID: 11500000, guid: ff0592bf53672c641a2b0b7febe3b348, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  linearVelocity: {x: 10, y: 0, z: 0}
+  linearVelocity: {x: 0, y: 0, z: 0}
   angularVelocity: 0
   maxSpeed: 1
-  maxAngularVelocity: 45
+  maxAngularVelocity: 90
   flockDistance: 20
   visionAngle: 45
   avoidDistance: 10
-  weightSeparate: 4
+  weightSeparate: 2
   weightAlign: 0.4
   weightArrive: 1
   weightLookWhereGoing: 0.2
+  weightSeek: 0
+  seekTarget: {fileID: 0}
