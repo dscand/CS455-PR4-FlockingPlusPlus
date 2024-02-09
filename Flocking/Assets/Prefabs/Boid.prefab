@@ -112,7 +112,7 @@ GameObject:
   - component: {fileID: 6725479345494795243}
   m_Layer: 0
   m_Name: Boid
-  m_TagString: Untagged
+  m_TagString: Boid
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -212,8 +212,10 @@ MonoBehaviour:
   angularVelocity: 0
   maxSpeed: 1
   maxAngularVelocity: 45
-  flock: {fileID: 0}
-  weightSeparate: 10
-  weightAlign: 1
+  flockDistance: 20
+  visionAngle: 45
+  avoidDistance: 10
+  weightSeparate: 4
+  weightAlign: 0.4
   weightArrive: 1
-  weightLookWhereGoing: 0
+  weightLookWhereGoing: 0.2
