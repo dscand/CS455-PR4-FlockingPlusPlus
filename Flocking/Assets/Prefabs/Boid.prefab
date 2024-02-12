@@ -210,7 +210,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   linearVelocity: {x: 0, y: 0, z: 0}
   angularVelocity: 0
-  maxSpeed: 1
+  maxSpeed: 4
   maxAngularVelocity: 90
   flockDistance: 20
   visionAngle: 45
